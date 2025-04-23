@@ -1,0 +1,98 @@
+import React, { useState } from "react";
+import { Button, Box } from "@chakra-ui/react";
+import DailyShiftDetails from "./index";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { fetcher } from "@services/fetcher";
+
+// Define the schema for a single shift
+const shiftSchema = z.object({
+  typeOfShift: z.string().min(1),
+  shiftDate: z.string().min(1),
+  typeOfDrill: z.string().min(1),
+  shiftDetails: z.string().min(1),
+  depthFrom: z.number().optional(),
+  depthTo: z.number().optional(),
+  coreRecovery: z.number().optional(),
+  addFormation: z.array(z.object({ formationType: z.string() })).optional(),
+  remarks: z.string().optional(),
+  bitType: z.string().optional(),
+  bitNum: z.string().optional(),
+  rshellNum: z.number().optional(),
+  runHrsOfRig: z.string().optional(),
+  dowType: z.string().optional(),
+  natureOfHoliday: z.string().optional(),
+  downReason: z
+    .array(z.object({ downReason: z.string(), numOfHrs: z.number(), remark: z.string() }))
+    .optional(),
+});
+
+// Entire form schema
+const formSchema = z.object({
+  shifts: z.array(shiftSchema),
+});
+
+const DailyShiftContainer = () => {
+  const [shiftForms, setShiftForms] = useState<number[]>([0]);
+
+  const methods = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      shifts: [{}],
+    },
+  });
+
+  const handleAddNewShift = () => {
+    setShiftForms((prev) => [...prev, prev.length]);
+    methods.setValue(`shifts.${shiftForms.length}`, {}); // add default
+  };
+
+  const handleRemoveShift = (formId: number) => {
+    setShiftForms((prev) => prev.filter((id) => id !== formId));
+    const updatedShifts = methods.getValues("shifts").filter((_, index) => index !== formId);
+    methods.setValue("shifts", updatedShifts);
+  };
+
+  const onSubmit = async (data: any) => {
+    try {
+      const response = await fetcher({
+        path: "/drill/save-daily-shifts",
+        method: "POST",
+        json: data.shifts,
+      });
+      console.log("Server response:", response);
+      alert("Shifts saved successfully!");
+    } catch (err) {
+      console.error("Submission error:", err);
+      alert("Something went wrong!");
+    }
+  };
+
+  return (
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <Button colorScheme="facebook" onClick={handleAddNewShift} mb={4}>
+          Add New Shift
+        </Button>
+
+        {shiftForms.map((formId, index) => (
+          <Box key={formId} mb={4}>
+            <DailyShiftDetails
+              formId={formId}
+              onRemove={() => handleRemoveShift(formId)}
+              isLast={index === shiftForms.length - 1}
+              onAddNewShift={handleAddNewShift}
+            />
+          </Box>
+        ))}
+
+        <Button colorScheme="green" type="submit" mt={4}>
+          Submit All Shifts
+        </Button>
+      </form>
+    </FormProvider>
+  );
+};
+
+export default DailyShiftContainer;
