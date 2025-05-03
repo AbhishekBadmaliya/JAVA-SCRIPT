@@ -1,0 +1,1095 @@
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Modal Example</title>
+	<style>
+		/* Modal background */
+		.modal {
+			display: none;
+			/* Hidden by default */
+			position: fixed;
+			/* Stay in place */
+			top: 0;
+			left: 0;
+			width: 100%;
+			/* Full width */
+			height: 100%;
+			/* Full height */
+			background-color: rgba(0, 0, 0, 0.5);
+			/* Black background with opacity */
+			justify-content: center;
+			align-items: center;
+			z-index: 1000;
+			/* Sit on top */
+		}
+
+		/* Modal content */
+		.modal-content {
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 5px;
+			width: 300px;
+			/* Fixed width */
+			max-width: 90%;
+			/* Responsive max-width */
+			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+			text-align: center;
+		}
+
+		/* Form styling */
+		#yesNoForm {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		/* Button styling */
+		button {
+			padding: 10px;
+			border: none;
+			border-radius: 3px;
+			cursor: pointer;
+			font-size: 16px;
+		}
+
+		button:first-of-type {
+			background-color: #4CAF50;
+			color: white;
+		}
+
+		button:last-of-type {
+			background-color: #f44336;
+			color: white;
+		}
+
+		button:hover {
+			opacity: 0.9;
+		}
+	</style>
+</head>
+
+<body class="fix-header fix-sidebar card-no-border m-0 profile-page">
+	<div th:fragment="fragment" class="profile-page">
+		<form th:action="@{save-tab}" th:object="${EmployeeDetails}" method="post">
+			<input type="hidden" class="form-control" id="formstatus" th:field="*{formstatus}" readonly="readonly" />
+			<div th:if="*{formstatus} == 'Submitted'">
+				<div class="alert alert-success" role="alert">🎉
+					Congratulations! All sections have been filled successfully.</div>
+			</div>
+
+			<div class="heading-part">
+				<h3>
+					<span th:text="'Hello ' + ${username} + ' 👋'"></span>
+				</h3>
+			</div>
+			<div class="d-flex align-items-start leftNavBar">
+				<div class="nav flex-column nav-pills me-3" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+					<div class="px-3">
+						<img src="assets/images/hrms/userNavIcon.png" alt="" class="NavUser">
+					</div>
+
+					<h3 class="px-3">Secure and compliant with Paysarthi</h3>
+
+					<!-- Tab 1: Personal Details -->
+					<a class="nav-link" id="personalDetailstab" data-bs-toggle="pill" data-bs-target="#personalDetails" role="tab"
+						aria-controls="personalDetails" aria-selected="true" th:classappend="${currentTab < 1} ? ' ' : ''"> <img
+							src="assets/images/hrms/pdetails-icon.png" alt="" class="berIcon">
+						Personal Details
+					</a>
+
+					<!-- Tab 2: Service Details -->
+					<a class="nav-link" id="serviceDetailstab" data-bs-toggle="pill" data-bs-target="#serviceDetails" role="tab"
+						aria-controls="serviceDetails" aria-selected="false" th:classappend="${currentTab < 2} ? ' ' : ''"> <img
+							src="assets/images/hrms/sdetails-icon.png" alt="" class="berIcon">
+						Service Details
+					</a>
+
+					<!-- Tab 3: Address Details -->
+					<a class="nav-link" id="addressDetailstab" data-bs-toggle="pill" data-bs-target="#addressDetails" role="tab"
+						aria-controls="addressDetails" aria-selected="false" th:classappend="${currentTab < 3} ? ' ' : ''"> <img
+							src="assets/images/hrms/adetails-icon.png" alt="" class="berIcon">
+						Address Details
+					</a>
+
+					<!-- Tab 4: Experience -->
+					<a class="nav-link" id="experienceNavtab" data-bs-toggle="pill" data-bs-target="#experienceNav" role="tab"
+						aria-controls="experienceNav" aria-selected="false" th:classappend="${currentTab < 4} ? ' ' : ''"> <img
+							src="assets/images/hrms/expr-icon.png" alt="" class="berIcon">
+						Experience
+					</a>
+
+					<!-- Tab 5: Training -->
+					<a class="nav-link" id="trainingNavtab" data-bs-toggle="pill" data-bs-target="#trainingNav" role="tab"
+						aria-controls="trainingNav" aria-selected="false" th:classappend="${currentTab < 5} ? ' ' : ''"> <img
+							src="assets/images/hrms/training-icon.png" alt="" class="berIcon">
+						Training
+					</a>
+
+					<!-- Tab 6: Qualifications -->
+					<a class="nav-link" id="qualificationsNavtab" data-bs-toggle="pill" data-bs-target="#qualificationsNav"
+						role="tab" aria-controls="qualificationsNav" aria-selected="false"
+						th:classappend="${currentTab < 6} ? ' ' : ''"> <img src="assets/images/hrms/quali-icon.png" alt=""
+							class="berIcon">
+						Qualifications
+					</a>
+
+					<!-- Tab 7: Awards / Publications -->
+					<a class="nav-link" id="awardsPublicationstab" data-bs-toggle="pill" data-bs-target="#awardsPublications"
+						role="tab" aria-controls="awardsPublications" aria-selected="false"
+						th:classappend="${currentTab < 7} ? ' ' : ''"> <img src="assets/images/hrms/award-icon.png" alt=""
+							class="berIcon">
+						Awards / Publications
+					</a>
+				</div>
+
+				<section class="dashboard-page w-100">
+					<div class="container-fluid d-flex flex-column w-100">
+						<div class="card w-100 me-3 mt-3">
+							<div class="card-body">
+								<input type="hidden" name="currenttab" th:field="*{currentTab}">
+
+								<div class="tab-content" id="v-pills-tabContent">
+									<!-- Personal Details Tab -->
+									<div class="tab-pane fade show active" id="personalDetails" role="tabpanel"
+										aria-labelledby="personalDetailstab" data-tab-index="1">
+										<div class="row">
+											<h3 class="mb-4">Let's finish setting up your account</h3>
+
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="employeename" readonly="readonly"
+														th:field="*{employeename}" placeholder="name"> <label for="floatingInput">Employee
+														Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="dob" th:field="*{dob}" placeholder="27/09/1990">
+													<label for="floatingInput">Date of Birth</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" name="gender" th:field="*{gender}" aria-label="Gender">
+														<option th:value="Male" th:selected="${gender == 'Male'}">Male</option>
+														<option th:value="Female" th:selected="${gender == 'Female'}">Female</option>
+														<option th:value="Other" th:selected="${gender == 'Other'}">Other</option>
+													</select> <label for="floatingSelect">Select Gender</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" th:field="*{category}" id="floatingSelect" aria-label="Category">
+														<option th:value="0">--Select--</option>
+														<option th:value="General">General</option>
+														<option th:value="SC">SC</option>
+														<option th:value="ST">ST</option>
+														<option th:value="OBC">OBC</option>
+														<option th:value="EWS">EWS</option>
+														<option th:value="PwD">PwD</option>
+														<option th:value="Transgender">Transgender</option>
+														<option th:value="Others">Others</option>
+													</select> <label for="floatingSelect">Select Category</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" name="fathername" th:field="*{fathername}"
+														placeholder="Father Name">
+													<label for="floatingInput">Father Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" th:field="*{mothername}" placeholder="Mother Name">
+													<label for="floatingInput">Mother Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" th:field="*{maritalstatus}" id="floatingSelect"
+														aria-label="Marital Status">
+														<option th:value="0">--Select Marital Status--</option>
+														<option th:value="Married">Married</option>
+														<option th:value="Unmarried">Unmarried</option>
+													</select> <label for="floatingSelect">Marital Status</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" th:field="*{spousename}" id="floatingInputSpouse"
+														placeholder="Enter Spouse "> <label for="floatingInputSpouse">Spouse Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select placeholder="Select State" th:field="*{birthstate}" class="form-control">
+														<option value="0">--Select State--</option>
+														<option th:each="obj,index: ${statelist}" th:value="${obj.state}" th:text="${obj.state}">
+														</option>
+													</select> <label for="floatingSelect">Birth State</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" th:field="*{birthplace}"
+														placeholder="BirthPlace Name">
+													<label for="floatingInput">Birthplace Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" th:field="*{permanentresidence}" id="floatingSelect"
+														placeholder="Select State  of Permanent Residence"
+														aria-label="State of Permanent Residence">
+														<option th:value="0">--Select Permanent
+															Residence--</option>
+														<option th:each="obj,index: ${statelist}" th:value="${obj.state}" th:text="${obj.state}">
+														</option>
+													</select> <label for="floatingSelect">State of Permanent
+														Residence</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" th:field="*{pannumber}" id="floatingInputPAN"
+														placeholder="Enter PAN No."> <label for="floatingInputPAN">Enter PAN No.</label>
+													<div id="panError" class="text-danger small" style="display: none;"></div>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" th:field="*{identificationmark}"
+														id="floatingInputIdentification" placeholder="Enter Identification Mark"> <label
+														for="floatingInputIdentification">Enter
+														Identification Mark</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" th:field="*{bloodgroup}" id="floatingSelect"
+														aria-label="Blood Group">
+														<option th:value="'0'">--Select Blood Group--</option>
+														<option th:value="'A-'">A-</option>
+														<option th:value="'B+'">B+</option>
+														<option th:value="'B-'">B-</option>
+														<option th:value="'AB+'">AB+</option>
+														<option th:value="'AB-'">AB-</option>
+														<option th:value="'O+'">O+</option>
+														<option th:value="'O-'">O-</option>
+													</select> <label for="floatingSelect">Blood Group</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" th:field="*{mothertongue}" id="floatingSelect"
+														aria-label="Mother Tongue">
+														<option th:value="0">--Select Mother Tongue--</option>
+														<option th:value="Assamese">Assamese</option>
+														<option th:value="Bengali">Bengali</option>
+														<option th:value="English">English</option>
+														<option th:value="Gujarati">Gujarati</option>
+														<option th:value="Hindi">Hindi</option>
+														<option th:value="Kannada">Kannada</option>
+														<option th:value="Kashmiri">Kashmiri</option>
+														<option th:value="Konkani">Konkani</option>
+														<option th:value="Maithili">Maithili</option>
+														<option th:value="Malayalam">Malayalam</option>
+														<option th:value="Manipuri">Manipuri</option>
+														<option th:value="Marathi">Marathi</option>
+														<option th:value="Nepali">Nepali</option>
+														<option th:value="Odia">Odia</option>
+														<option th:value="Punjabi">Punjabi</option>
+														<option th:value="Santali">Santali</option>
+														<option th:value="Sindhi">Sindhi</option>
+														<option th:value="Tamil">Tamil</option>
+														<option th:value="Telugu">Telugu</option>
+														<option th:value="Urdu">Urdu</option>
+													</select> <label for="floatingSelect">Mother Tongue</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-1">
+													<input type="text" class="form-control" th:field="*{region}" id="floatingInputAadhar"
+														maxlength="12" placeholder="Enter Aadhar Number">
+													<label for="floatingInputAadhar">Enter Aadhar
+														Number</label>
+												</div>
+												<div id="aadharError" class="text-danger small" style="display: none;"></div>
+											</div>
+
+											<div class="card">
+												<div class="card-body">
+													<table class="table table-bordered thead-light text-black font-14 mt-5">
+														<thead>
+															<tr class="myTabletr">
+																<th>Language</th>
+																<th>Proficiency Level</th>
+															</tr>
+														</thead>
+														<tbody>
+															<tr>
+																<td>
+																	<div class="form-group row">
+																		<div class="col-md-9">
+																			<select class="form-control text-center" id="language">
+																				<option value="0">--Select--</option>
+																				<option value="English">English</option>
+																				<option value="Hindi">Hindi</option>
+																				<option value="Gujarati">Gujarati</option>
+																			</select>
+																		</div>
+																	</div>
+																</td>
+																<td>
+																	<table>
+																		<thead>
+																			<tr>
+																				<th>Read</th>
+																				<th>Write</th>
+																				<th>Speak</th>
+																			</tr>
+																		</thead>
+																		<tbody>
+																			<tr>
+																				<td>
+																					<div class="form-group row">
+																						<div class="col-md-9">
+																							<select class="form-control text-center" id="read">
+																								<option value="0">--Select--</option>
+																								<option value="1">1</option>
+																								<option value="2">2</option>
+																								<option value="3">3</option>
+																							</select>
+																						</div>
+																					</div>
+																				</td>
+																				<td>
+																					<div class="form-group row">
+																						<div class="col-md-9">
+																							<select class="form-control text-center" id="write">
+																								<option value="0">--Select--</option>
+																								<option value="1">1</option>
+																								<option value="2">2</option>
+																								<option value="3">3</option>
+																							</select>
+																						</div>
+																					</div>
+																				</td>
+																				<td>
+																					<div class="form-group row">
+																						<div class="col-md-9">
+																							<select class="form-control text-center" id="speak">
+																								<option value="0">--Select--</option>
+																								<option value="1">1</option>
+																								<option value="2">2</option>
+																								<option value="3">3</option>
+																							</select>
+																						</div>
+																					</div>
+																				</td>
+																			</tr>
+																		</tbody>
+																	</table>
+																</td>
+															</tr>
+														</tbody>
+													</table>
+
+													<div class="align-items-center d-flex justify-content-center">
+														<button id="addButton" type="button" class="btn btn-primary">Add to Table</button>
+													</div>
+
+													<div class="container">
+														<table id="insertdatatable"
+															class="table table-bordered thead-light text-black font-14 mt-5">
+															<thead>
+																<tr class="myTabletr">
+																	<th>Language</th>
+																	<th>Read</th>
+																	<th>Write</th>
+																	<th>Speak</th>
+																	<th>Action</th>
+																</tr>
+															</thead>
+															<tbody></tbody>
+														</table>
+													</div>
+												</div>
+											</div>
+
+											<!-- Hidden inputs for languages -->
+											<div id="languageInputs"></div>
+										</div>
+									</div>
+
+									<!-- Service Details Tab -->
+									<div class="tab-pane fade show" id="serviceDetails" role="tabpanel"
+										aria-labelledby="serviceDetailstab" data-tab-index="2">
+										<div class="row">
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="empid" th:field="*{empid}" readonly="readonly"
+														placeholder="Employee Code"> <label for="floatingInput">Employee Code</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{wingdivision}"
+														aria-label="Service" onchange="getdepartmentlist(this.value)">
+														<option th:value="0">--Select Wing/Division--</option>
+														<option value="Traffic & Logistic wing">Traffic &
+															Logistic wing</option>
+														<option value="Technical Wing">Technical Wing</option>
+														<option value="Finance WingS">Finance Wing</option>
+														<option value="Administration">Administration</option>
+													</select> <label for="floatingSelect">Select Wing/Division</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{designation}"
+														aria-label="Designation">
+														<option th:value="0">--Select Designation--</option>
+														<option th:each="dept:${masterdesignationlist}" th:value="${dept.designationname}"
+															th:text="${dept.designationname}"></option>
+													</select> <label for="floatingSelect">Select Designation</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="departmentlist" th:field="*{department}"
+														aria-label="Department">
+														<option th:value="0">--Select Department--</option>
+														<option th:each="dept:${departmentmasterlist}" th:value="${dept.departmentname}"
+															th:text="${dept.departmentname}"></option>
+													</select> <label for="floatingSelect">Select Department </label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{officelocation}"
+														aria-label="Office">
+														<option th:value="0">--Select Office--</option>
+														<option th:each="obj,index: ${officeLocationList}" th:value="${obj.location}"
+															th:text="${obj.location}"></option>
+													</select> <label for="floatingSelect">Select Office</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{emp_level}"
+														aria-label="PayLevelMatrix">
+														<option th:value="0">--Select Pay Level Matrix--</option>
+														<option th:each="obj,index: ${paylevelList}" th:value="${obj.level}" th:text="${obj.level}">
+														</option>
+													</select> <label for="floatingSelect">Select Pay Level
+														Matrix</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{basicsalary}"
+														placeholder="Basic Salary">
+													<label for="floatingInput">Basic Salary</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="" th:field="*{payeffectivedate}"
+														placeholder="27/09/1990">
+													<label for="floatingInput">Pay Effective Date</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Address Details Tab -->
+									<div class="tab-pane fade show" id="addressDetails" role="tabpanel"
+										aria-labelledby="addressDetailstab" data-tab-index="3">
+										<div class="row">
+											<h3 class="mb-4">Present Address</h3>
+											<div class="col-md-6">
+												<div class="form-block">
+													<label>State Name</label> <select id="presentstate" th:field="*{presentstate}"
+														class="form-select" onchange="PresentAddress(this.value)">
+														<option value="0">--Select State--</option>
+														<option th:each="obj,index: ${statelist}" th:value="${obj.state}" th:text="${obj.state}">
+														</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-block">
+													<label>City Name</label> <select id="city" th:field="*{presentdistrict}" class="form-select">
+														<option value="0">--Select City--</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{presentaddress1}"
+														placeholder="Address">
+													<label for="floatingInput">Address</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="number" class="form-control" id="" th:field="*{presentpincode}"
+														placeholder="pincode">
+													<label for="floatingInput">Pincode</label>
+												</div>
+											</div>
+										</div>
+										<div class="row">
+											<h3 class="mb-4">Permanent Address</h3>
+											<div class="col-md-6">
+												<div class="form-block mb-3">
+													<label>State Name</label> <select id="permanentstate" th:field="*{permanentstate}"
+														class="form-select" onchange="PermenentAddress(this.value)">
+														<option value="0">--Select State--</option>
+														<option th:each="obj,index: ${statelist}" th:value="${obj.state}" th:text="${obj.state}">
+														</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-block">
+													<label>City Name</label> <select id="cityp" th:field="*{permanentdistrict}"
+														class="form-select">
+														<option value="0">--Select City--</option>
+													</select>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{permanentaddress1}"
+														placeholder="Address1">
+													<label for="floatingInput">Address1</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="number" class="form-control" id="" th:field="*{permanentpincode}"
+														placeholder="pincode">
+													<label for="floatingInput">Pincode</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Experience Details Tab -->
+									<div class="tab-pane fade show" id="experienceNav" role="tabpanel" aria-labelledby="experienceNavtab"
+										data-tab-index="4">
+										<div class="row">
+											<h3 class="mb-4">Experience Details</h3>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{expdesignation}"
+														placeholder="Enter a Designation"> <label for="floatingInput">Designation</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="ministry" th:field="*{ministry}"
+														placeholder="Enter Ministry/Organization"> <label for="floatingInput">Ministry/Organization
+													</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{location}"
+														placeholder="Enter Location">
+													<label for="floatingInput">Location</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{experience}"
+														aria-label="Select Experience in Year">
+														<option th:value="0">--Select Experience in
+															Year--</option>
+														<option th:value="1">Less than 1 year</option>
+														<option th:value="2">1-2 years</option>
+														<option th:value="3">3-5 years</option>
+														<option th:value="4">6-10 years</option>
+														<option th:value="5">11-15 years</option>
+														<option th:value="6">16-20 years</option>
+														<option th:value="7">More than 20 years</option>
+													</select> <label for="floatingSelect">Select Experience in
+														Year</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="" th:field="*{fromdate}" placeholder="27/09/1990">
+													<label for="floatingInput">From Date</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="" th:field="*{todate}" placeholder="27/09/1990">
+													<label for="floatingInput">To Date</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Training Details Tab -->
+									<div class="tab-pane fade show" id="trainingNav" role="tabpanel" aria-labelledby="trainingNavtab"
+										data-tab-index="5">
+										<div class="row">
+											<h3 class="mb-4">Training Details</h3>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{addtraining}"
+														aria-label="Select Training">
+														<option th:value="0">--Select Training/Course
+															Details--</option>
+														<option th:value="Online">Online</option>
+														<option th:value="Offline">Offline</option>
+														<option th:value="Other">Other</option>
+													</select> <label for="floatingSelect">Select Training/Course
+														Details</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{trainingname}"
+														placeholder="Enter Training Name"> <label for="floatingInput">Training Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{institute}"
+														placeholder="Enter Institute Name">
+													<label for="floatingInput">Institute Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="" th:field="*{trfromdate}"
+														placeholder="27/09/1990">
+													<label for="floatingInput">From Date</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="date" class="form-control" id="" th:field="*{trtodate}" placeholder="27/09/1990">
+													<label for="floatingInput">To Date</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{result}"
+														aria-label="Select Training">
+														<option th:value="0">--Select Result--</option>
+														<option th:value="Pass">Pass</option>
+														<option th:value="Fail">Fail</option>
+													</select> <label for="floatingSelect">Select Result</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Qualifications Details Tab -->
+									<div class="tab-pane fade show" id="qualificationsNav" role="tabpanel"
+										aria-labelledby="qualificationsNavtab" data-tab-index="6">
+										<div class="row">
+											<h3 class="mb-4">Qualification Details</h3>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{university}"
+														placeholder="Enter University">
+													<label for="floatingInput">Enter
+														University/Institute Board</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{qualification}"
+														placeholder="Enter Qualification"> <label for="floatingInput">Qualification</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{division}"
+														placeholder="Enter Division">
+													<label for="floatingInput">Division</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{yearofpassing}"
+														aria-label="Select Year">
+														<option th:value="0">--Select Year--</option>
+														<option th:value="2025">2025</option>
+														<option th:value="2024">2024</option>
+														<option th:value="2023">2023</option>
+														<option th:value="2022">2022</option>
+														<option th:value="2021">2021</option>
+														<option th:value="2020">2020</option>
+														<option th:value="2019">2019</option>
+														<option th:value="2018">2018</option>
+														<option th:value="2017">2017</option>
+														<option th:value="2016">2016</option>
+													</select> <label for="floatingSelect">Select Year</label>
+												</div>
+											</div>
+										</div>
+									</div>
+
+									<!-- Awards/Publications Tab -->
+									<div class="tab-pane fade show" id="awardsPublications" role="tabpanel"
+										aria-labelledby="awardsPublicationstab" data-tab-index="7">
+										<div class="row">
+											<h3 class="mb-4">Awards/ Publications Details</h3>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{type}" placeholder="Type"> <label
+														for="floatingInput">Type</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{area}" placeholder="Area"> <label
+														for="floatingInput">Area</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<select class="form-select" id="floatingSelect" th:field="*{year}" aria-label="Select Year">
+														<option th:value="0">--Select Year--</option>
+														<option th:value="2025">2025</option>
+														<option th:value="2024">2024</option>
+														<option th:value="2023">2023</option>
+														<option th:value="2022">2022</option>
+														<option th:value="2021">2021</option>
+														<option th:value="2020">2020</option>
+														<option th:value="2019">2019</option>
+														<option th:value="2018">2018</option>
+														<option th:value="2017">2017</option>
+														<option th:value="2016">2016</option>
+													</select> <label for="floatingSelect">Select Year</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{namedescription}"
+														placeholder="Name/Description"> <label for="floatingInput">Name/Description</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{awardpublisher}"
+														placeholder="Award Given by Publisher Name"> <label for="floatingInput">Award Given by
+														Publisher Name</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{subject}" placeholder="Subject">
+													<label for="floatingInput">Subject</label>
+												</div>
+											</div>
+											<div class="col-md-6">
+												<div class="form-floating mb-3">
+													<input type="text" class="form-control" id="" th:field="*{level}" placeholder="Level"> <label
+														for="floatingInput">Level</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<button type="submit" name="action" value="next" id="savenext" class="btn yr-primary">
+									<img src="assets/images/hrms/add-DetailsIcon.png" alt="" class="me-1">Save
+								</button>
+
+								<button type="submit" name="action" id="finalSubmitBtn" value="finalsubmit" class="btn yr-primary">
+									<img src="assets/images/hrms/add-DetailsIcon.png" alt="" class="me-1">Submit
+								</button>
+							</div>
+						</div>
+					</div>
+				</section>
+			</div>
+
+			<!-- Modal structure -->
+			<div id="yesNoModal" class="modal">
+				<div class="modal-content">
+					<h3>Select an option</h3>
+					<form id="yesNoForm">
+						<label>
+							<input type="radio" name="choice" value="yes"> Yes
+						</label>
+						<br>
+						<label>
+							<input type="radio" name="choice" value="no"> No
+						</label>
+						<br>
+						<button type="button" onclick="submitChoice()">Submit</button>
+						<button type="button" onclick="closeModal()">Cancel</button>
+					</form>
+				</div>
+			</div>
+		</form>
+
+		<script>
+			function popupYesNo() {
+				console.log('popupYesNo called');
+				var modal = document.getElementById('yesNoModal');
+				if (modal) {
+					modal.style.display = 'flex';
+					console.log('Modal display set to flex');
+				} else {
+					console.error('Modal element not found');
+				}
+			}
+
+			function closeModal() {
+				console.log('closeModal called');
+				var modal = document.getElementById('yesNoModal');
+				if (modal) {
+					modal.style.display = 'none';
+					document.getElementById('yesNoForm').reset();
+					console.log('Modal hidden and form reset');
+				} else {
+					console.error('Modal element not found');
+				}
+			}
+
+			function submitChoice() {
+				console.log('submitChoice called');
+				// Rest of the function remains unchanged
+				var choice = $('input[name="choice"]:checked').val();
+				if (choice !== 'yes') {
+					console.log('Choice is not yes, closing modal');
+					closeModal();
+					return;
+				}
+
+				var empid = $("#empid").val() || "123";
+				var language = $("#language").val();
+				var readLevel = $("#read").val();
+				var speakLevel = $("#speak").val();
+				var writeLevel = $("#write").val();
+
+				if (!language || language === '0' || !readLevel || readLevel === '0' ||
+					!writeLevel || writeLevel === '0' || !speakLevel || speakLevel === '0') {
+					alert('Please select a valid language and proficiency levels.');
+					closeModal();
+					return;
+				}
+
+				var data = {
+					empid: empid,
+					language: language,
+					readlevel: readLevel,
+					speaklevel: speakLevel,
+					writelevel: writeLevel
+				};
+
+				var languageDetails = [];
+				$('#insertdatatable .languagelistclass').each(function () {
+					var existingData = $(this).val().replaceAll("'", '"');
+					languageDetails.push(JSON.parse(existingData));
+				});
+
+				languageDetails.push(data);
+
+				$("#insertdatatable").show();
+
+				var newRow = '<tr>' +
+					'<input type="hidden" class="languagelistclass" value="' + JSON.stringify(data).replaceAll('"', '\'') + '"/>' +
+					'<input type="hidden" name="empid" value="' + empid + '">' +
+					'<input type="hidden" name="language" value="' + language + '">' +
+					'<input type="hidden" name="readlevel" value="' + readLevel + '">' +
+					'<input type="hidden" name="speaklevel" value="' + speakLevel + '">' +
+					'<input type="hidden" name="writelevel" value="' + writeLevel + '">' +
+					'<td>' + language + '</td>' +
+					'<td>' + readLevel + '</td>' +
+					'<td>' + writeLevel + '</td>' +
+					'<td>' + speakLevel + '</td>' +
+					'<td><button class="btn btn-danger removeButton"><i class="fa fa-remove"></i></button></td>' +
+					'</tr>';
+				$('#insertdatatable tbody').append(newRow);
+
+				$('#insertdatatable td:not(:last-child)').each(function () {
+					if ($(this).text().trim() === '0' || $(this).text().trim() === '') {
+						$(this).text('-');
+					}
+				});
+
+				$.ajax({
+					url: '/save-tab',
+					type: 'POST',
+					data: {
+						jsonlanguagedetails: JSON.stringify(languageDetails),
+						action: 'save',
+						currentTab: 1,
+						empid: empid
+					},
+					success: function (response) {
+						console.log('Language details saved:', response);
+						$('#language').val('0');
+						$('#read').val('0');
+						$('#write').val('0');
+						$('#speak').val('0');
+						closeModal();
+						alert('Language details added successfully!');
+					},
+					error: function (xhr, status, error) {
+						console.error('Error saving language details:', {
+							status: status,
+							error: error,
+							responseText: xhr.responseText,
+							statusCode: xhr.status
+						});
+						alert('Failed to save language details. Error: ' + (xhr.responseText || error));
+						closeModal();
+					}
+				});
+
+				$('#insertdatatable').on('click', '.removeButton', function () {
+					$(this).closest('tr').remove();
+					if ($('#insertdatatable tbody tr').length === 0) {
+						$('#insertdatatable').hide();
+					}
+				});
+			}
+
+			$(document).ready(function () {
+				console.log('Document ready');
+				// Replace the existing #addButton click handler
+				$('#addButton').on('click', function () {
+					console.log('Add button clicked');
+					popupYesNo();
+				});
+
+				// Rest of the $(document).ready remains unchanged
+				var formstatus = $("#formstatus").val();
+				if (formstatus === 'Submitted') {
+					console.log('Form status is Submitted, disabling inputs');
+					$(".leftNavBar").find("input, select, textarea, button").each(function () {
+						if ($(this).is("input")) {
+							$(this).prop("readonly", true);
+						}
+						if ($(this).is("select") || $(this).is("button")) {
+							$(this).prop("disabled", true);
+						}
+					});
+					$("#savenext").hide();
+				}
+
+				$('#finalSubmitBtn').hide();
+				$('.nav-link').on('click', function () {
+					const target = $(this).attr('data-bs-target');
+					if (target === '#awardsPublications') {
+						if (formstatus === 'Submitted') {
+							$('#finalSubmitBtn').hide();
+						} else {
+							$('#finalSubmitBtn').show();
+						}
+					} else {
+						$('#finalSubmitBtn').hide();
+					}
+				});
+
+				if ($('.nav-link.active').attr('data-bs-target') === '#awardsPublications') {
+					if (formstatus !== 'Submitted') {
+						$('#finalSubmitBtn').show();
+					}
+				}
+
+				var employeedetailsData = [[${ EmployeeDetails }]];
+				var selectedPresentDistrict = employeedetailsData.presentdistrict;
+				var selectedPermanentDistrict = employeedetailsData.permanentdistrict;
+				PresentAddress($("#presentstate option:selected").val(), selectedPresentDistrict);
+				PermenentAddress($("#permanentstate option:selected").val(), selectedPermanentDistrict);
+				var selectedWingDivision = employeedetailsData.wingdivision;
+				var selectedDepartment = employeedetailsData.department;
+				getdepartmentlist(selectedWingDivision, selectedDepartment);
+			});
+
+			function PresentAddress(stateParam, selectedCity) {
+				$.ajax({
+					type: 'POST',
+					url: 'getcity',
+					data: { cat: stateParam },
+					success: function (result) {
+						var s = '<option value="0">--Select City--</option>';
+						for (var i = 0; i < result.length; i++) {
+							var selected = result[i].city === selectedCity ? 'selected' : '';
+							s += '<option value="' + result[i].city + '" ' + selected + '>' + result[i].city + '</option>';
+						}
+						$('#city').html(s);
+					}
+				});
+			}
+
+			function PermenentAddress(stateParam, selectedCity) {
+				$.ajax({
+					type: 'POST',
+					url: 'getcity',
+					data: { cat: stateParam },
+					success: function (result) {
+						var s1 = '<option value="0">--Select City--</option>';
+						for (var i = 0; i < result.length; i++) {
+							var selected = result[i].city === selectedCity ? 'selected' : '';
+							s1 += '<option value="' + result[i].city + '" ' + selected + '>' + result[i].city + '</option>';
+						}
+						$('#cityp').html(s1);
+					}
+				});
+			}
+
+			$(document).ready(function () {
+				$('#floatingInputPAN').on('change', function () {
+					var pan = $(this).val().toUpperCase();
+					var panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+					if (!panRegex.test(pan)) {
+						$('#panError').text("Invalid PAN number. Format must be 5 letters, 4 digits, 1 letter (e.g., ABCDE1234F)").show();
+						$(this).addClass('is-invalid');
+					} else {
+						$('#panError').hide();
+						$(this).removeClass('is-invalid');
+						$(this).val(pan);
+					}
+				});
+
+				$('#floatingInputAadhar').on('change', function () {
+					var aadhar = $(this).val().trim();
+					var aadharRegex = /^\d{12}$/;
+					if (!aadharRegex.test(aadhar)) {
+						$('#aadharError').text("Invalid Aadhaar number. It must be exactly 12 digits.").show();
+						$(this).addClass('is-invalid');
+					} else {
+						$('#aadharError').hide();
+						$(this).removeClass('is-invalid');
+					}
+				});
+			});
+
+			function getdepartmentlist(value, selectedDepartment) {
+				$.ajax({
+					type: "POST",
+					url: "getdepartmentlist",
+					data: { cat: value },
+					success: function (result) {
+						var s = '<option value="0">--Select Department--</option>';
+						for (var i = 0; i < result.length; i++) {
+							var selected = result[i].departmentname === selectedDepartment ? 'selected' : '';
+							s += '<option value="' + result[i].departmentname + '" ' + selected + '>' + result[i].departmentname + '</option>';
+						}
+						$('#departmentlist').html(s);
+					}
+				});
+			}
+		</script>
+	</div>
+</body>
+
+</html>
