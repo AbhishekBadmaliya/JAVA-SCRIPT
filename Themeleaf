@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Salary for Feb 2025</title>
+
+    <!-- DataTables CSS -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/fixedcolumns/4.3.0/css/fixedColumns.dataTables.min.css"/>
+
+    <!-- jQuery & DataTables JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/4.3.0/js/dataTables.fixedColumns.min.js"></script>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        table.dataTable {
+            width: max-content !important;
+        }
+
+        th, td {
+            white-space: nowrap;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2>Salary for Feb 2025</h2>
+    <table id="salaryTable" class="display nowrap" style="width:100%">
+        <thead>
+        <tr>
+            <th>S.No.</th>
+            <th>Employee Name</th>
+            <th>Basic Pay</th>
+            <th>Grade Pay</th>
+            <th>DA</th>
+            <th>TA</th>
+            <th>HRA</th>
+            <th>Bonus</th>
+            <th>Washing Allowance</th>
+            <th>Children Edu. Allowance</th>
+            <th>Income Tax</th>
+            <th>Group Insurance</th>
+            <th>HBA Rec</th>
+            <th>Rent</th>
+            <th>GPF(SUB)</th>
+            <th>Vehicle Adv</th>
+            <th>Computer Adv</th>
+            <th>Festival Adv</th>
+            <th>Total Deduction</th>
+            <th>Net Pay</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="row : ${salaryList}">
+            <td th:text="${row.sno}">97</td>
+            <td th:text="${row.name}">Krishna Mahananda</td>
+            <td th:text="${row.basicPay}">46100</td>
+            <td th:text="${row.gradePay}">0</td>
+            <td th:text="${row.da}">24433</td>
+            <td th:text="${row.ta}">2754</td>
+            <td th:text="${row.hra}">13830</td>
+            <td th:text="${row.bonus}">0</td>
+            <td th:text="${row.washingAllowance}">0</td>
+            <td th:text="${row.childrenEducationAllowance}">0</td>
+            <td th:text="${row.incomeTax}">250</td>
+            <td th:text="${row.groupInsurance}">6000</td>
+            <td th:text="${row.hbaRec}">1700</td>
+            <td th:text="${row.rent}">0</td>
+            <td th:text="${row.gpfSub}">10000</td>
+            <td th:text="${row.vehicleAdv}">0</td>
+            <td th:text="${row.computerAdv}">0</td>
+            <td th:text="${row.festivalAdv}">0</td>
+            <td th:text="${row.totalDeduction}">87117</td>
+            <td th:text="${row.netPay}">67117</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $('#salaryTable').DataTable({
+            scrollX: true,
+            fixedColumns: {
+                leftColumns: 2
+            }
+        });
+    });
+</script>
+</body>
+</html>
